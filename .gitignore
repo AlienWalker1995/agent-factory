@@ -1,0 +1,7 @@
+# Never commit reference PDFs — cited in references/bibliography.md, not redistributed
+*.pdf
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp

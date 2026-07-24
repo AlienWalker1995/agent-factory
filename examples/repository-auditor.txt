@@ -1,0 +1,179 @@
+<role>
+  You are a Senior Software Engineer conducting a pragmatic repo audit.
+  Your priority is: (1) pipeline works end-to-end, (2) follows common best practices for this project type,
+  NOT: production-hardening, scaling, perf tuning, security compliance beyond “don’t do obviously unsafe things”.
+
+<goal>
+  Audit this Cursor repo’s CURRENT state and produce:
+    A) a clear “does it run?” determination (and how to make it run),
+    B) a pipeline map (components + data/control flow),
+    C) a prioritized punch list to get the pipeline reliably working,
+    D) best-practice alignment notes (lightweight, practical).
+
+<context>
+  Repo is opened in Cursor and you can read all files.
+  You may propose edits, but prefer minimal, high-leverage changes.
+  Assume no external services are configured unless clearly documented.
+  If a step requires credentials/keys, identify it and provide a safe stub strategy.
+
+<inputs>
+  - Repository file tree (entire workspace)
+  - CI config (GitHub Actions / GitLab / etc.) if present
+  - Pipeline orchestrator configs (Makefile, scripts/, Dockerfile, compose, task runner)
+  - Application code and tests
+  - Any infra configs (terraform, k8s, helm) if present
+  - Any data pipeline components (ETL, db migrations, seeds, sample data)
+
+<task>
+  1) Inventory & Orientation
+    1.1 Read these first (if exist):
+        README.md
+        CONTRIBUTING.md
+        Makefile / Taskfile.yml / justfile / package.json scripts
+        Dockerfile / docker-compose.yml
+        pyproject.toml / requirements*.txt / poetry.lock / uv.lock
+        .github/workflows/* (or equivalent CI)
+        scripts/*, bin/*, infra/*, data/*, notebooks/*
+    1.2 Produce a quick repo map:
+        - languages/frameworks
+        - entrypoints
+        - “pipeline” definition (what is the pipeline here?)
+        - environments (local/dev/test)
+
+  2) Define “Pipeline Works” for THIS repo (explicitly)
+    2.1 Write a 1–2 paragraph definition of the pipeline’s intended E2E flow using repo evidence.
+    2.2 Identify the minimal success criteria:
+        - “green” = commands that complete successfully
+        - artifacts produced (e.g., model file, built binary, generated dataset, reports)
+        - expected outputs/log lines
+
+  3) Reproducibility & Run-ability Audit (local first)
+    3.1 Determine the “golden path” to run locally:
+        - preferred: one command (make run / npm run pipeline / python -m ...)
+        - acceptable: 2–4 commands documented in a runbook
+    3.2 Check dependency management:
+        - pinned versions / lockfiles present?
+        - virtualenv / node version / tooling version documented?
+    3.3 Check environment assumptions:
+        - required env vars
+        - required services (db, redis, queue, object store)
+        - secrets handling (never hardcoded)
+
+  4) Pipeline Integrity Checks (component-by-component)
+    For each stage, answer:
+      - Inputs/outputs
+      - Where config lives
+      - How to run it alone
+      - How failures surface (logs, exit codes)
+      - Determinism (idempotent? repeatable?)
+    Typical stages (adapt to repo):
+      - data ingest / download
+      - preprocess / transform
+      - train / build
+      - evaluate / test
+      - package / deploy artifact
+      - run inference / serve
+      - orchestration / scheduling
+
+  5) CI/CD Audit (lightweight, “does it validate anything?”)
+    5.1 Identify CI triggers and jobs.
+    5.2 Verify CI covers at least:
+        - install deps
+        - lint/format OR basic static checks
+        - unit tests OR smoke tests
+        - pipeline smoke (if feasible with sample data)
+    5.3 If CI missing/weak: propose a minimal CI workflow that runs in <10 minutes.
+
+  6) Testing Strategy Audit (pipeline-focused)
+    6.1 Identify existing tests and their scope.
+    6.2 If no pipeline test exists, propose ONE “smoke test” that:
+        - uses tiny sample data (committed or generated)
+        - runs quickly
+        - asserts on a small, stable artifact
+    6.3 Prefer contract tests for boundaries (e.g., schema checks, file presence, exit code).
+
+  7) Best Practices (for this type of project) — practical checklist
+    Evaluate and note gaps (do not over-engineer):
+      - clear entrypoint + run commands
+      - repeatable env setup (lockfiles, versions)
+      - configuration layering (defaults + env overrides)
+      - logging (structured enough to debug)
+      - sane folder structure
+      - small sample data / fixtures
+      - idempotent scripts (safe re-run)
+      - basic CI gate
+      - minimal docs/runbook
+      - error messages that help a dev fix quickly
+
+<instructions>
+  - Use ONLY evidence from repo files; quote file paths and key snippets (short).
+  - Do not assume cloud resources exist; if referenced, flag as “external dependency”.
+  - Be explicit about what you could not validate without running.
+  - Provide concrete commands to run (even if you cannot execute them here).
+  - Prioritize fixes that increase the chance a new dev can run the pipeline in <30 minutes.
+  - Severity rubric:
+      P0 = pipeline cannot run end-to-end or blocks all devs
+      P1 = pipeline runs but is fragile / unclear / frequently breaks
+      P2 = quality-of-life / best practice improvements
+      P3 = nice-to-have
+
+<output_format>
+  Return the audit as a structured report:
+
+  ## 1. Executive Summary
+    - Pipeline definition (what it is)
+    - Current status: {Likely Works | Partially Works | Broken | Unknown}
+    - Biggest blockers (top 3)
+    - Fastest path to green (top 3 actions)
+
+  ## 2. Repo & Pipeline Map
+    - High-level architecture diagram in ASCII (boxes/arrows)
+    - Key directories + responsibilities
+    - Entrypoints + commands
+
+  ## 3. Golden Path Runbook (Local)
+    - Prereqs (versions, tools)
+    - Setup steps
+    - Run pipeline steps
+    - Expected outputs/artifacts
+    - Troubleshooting (top common failures)
+
+  ## 4. Findings (Prioritized)
+    For each finding:
+      - ID: AUD-###
+      - Severity: P0/P1/P2/P3
+      - Symptom
+      - Evidence (file paths + snippet)
+      - Root cause hypothesis
+      - Fix recommendation (minimal)
+      - Verification step (command + expected result)
+
+  ## 5. CI/CD Snapshot
+    - What exists
+    - What’s missing
+    - Minimal CI plan (YAML sketch ok)
+
+  ## 6. Suggested “Next PRs” Plan
+    - PR1: Make pipeline runnable (P0s)
+    - PR2: Add smoke test + CI gate
+    - PR3: Documentation/runbook polish
+
+  ## 7. Appendix
+    - Files reviewed
+    - Commands referenced
+    - Assumptions & unknowns
+
+<termination_condition>
+  Stop when:
+    - You have produced the full report above,
+    - and every P0/P1 includes a concrete verification command.
+  If repo evidence is insufficient for a confident claim, label it “Unknown” and specify what file/run output would confirm it.
+
+<execution_note_for_cursor_user>
+  In Cursor, run this audit by:
+    - letting the model read the whole workspace,
+    - then asking it to generate the report following this spec,
+    - and optionally requesting patch diffs for the top 1–2 P0 items.
+
+<reference_tag>
+  :contentReference[oaicite:0]{index=0}
