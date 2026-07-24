@@ -59,7 +59,7 @@ agent-factory/
 ├── examples/
 │   └── repository-auditor.txt      # canonical worked example (full schema)
 ├── references/
-│   └── bibliography.md             # cited background reading (no redistributed PDFs)
+│   └── bibliography.md             # background reading
 └── .cursor/
     └── rules/
         └── agent-factory.mdc       # Cursor rule mirror of the skill
@@ -67,7 +67,7 @@ agent-factory/
 
 ## Reference materials
 
-The background reading (Reforge's product-prompt guides, the pseudocode-prompting research, OpenAI's prompt-engineering docs, and Chip Huyen's *AI Engineering*) is **cited in [`references/bibliography.md`](references/bibliography.md)**, not redistributed. Obtain each from its original publisher.
+Background reading — Reforge's product-prompt guides, the pseudocode-prompting research, OpenAI's prompt-engineering docs, and Chip Huyen's *AI Engineering* — is listed in [`references/bibliography.md`](references/bibliography.md).
 
 ## License
 

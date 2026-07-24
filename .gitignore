@@ -1,4 +1,4 @@
-# Never commit reference PDFs — cited in references/bibliography.md, not redistributed
+# Local reference material
 *.pdf
 
 # OS / editor cruft

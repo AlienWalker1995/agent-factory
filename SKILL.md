@@ -168,6 +168,6 @@ Follow these when scaffolding a new skill body:
 
 ## Reference materials
 
-Deeper reading behind this skill's design is cited in [`references/bibliography.md`](references/bibliography.md) — the Reforge product-prompt guides, the pseudocode-prompting research, the OpenAI prompt-engineering fundamentals, and Chip Huyen's *AI Engineering*. The source PDFs are intentionally **not** redistributed here; the bibliography links to where each can be obtained.
+Deeper reading behind this skill's design is listed in [`references/bibliography.md`](references/bibliography.md) — the Reforge product-prompt guides, the pseudocode-prompting research, the OpenAI prompt-engineering fundamentals, and Chip Huyen's *AI Engineering*.
 
-The one shipped asset is [`examples/repository-auditor.txt`](examples/repository-auditor.txt) — the canonical worked example of the full pseudocode schema (a repo-audit prompt), the reference for calibrating how much detail belongs in each tag.
+The canonical worked example is [`examples/repository-auditor.txt`](examples/repository-auditor.txt) — the full pseudocode schema applied to a repo-audit prompt, the reference for calibrating how much detail belongs in each tag.

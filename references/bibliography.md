@@ -1,6 +1,6 @@
 # Bibliography
 
-Background reading behind the `agent-factory` skill's design. These sources are **cited, not redistributed** — the skill needs the ideas, not copies of copyrighted files. Obtain each from its original publisher.
+Background reading behind the `agent-factory` skill's design.
 
 ## Pseudocode / structured prompting (the core method)
 
@@ -15,8 +15,4 @@ Background reading behind the `agent-factory` skill's design. These sources are 
 
 ## Foundations
 
-- **Chip Huyen, *AI Engineering: Building Applications with Foundation Models*** (O'Reilly Media, 2025). ISBN 978-1-098-16630-4. Foundational framing of prompt engineering within the broader AI-application stack. Buy it: <https://www.oreilly.com/library/view/ai-engineering/9781098166298/>
-
----
-
-*If you have licensed copies of any of these for personal reference, keep them locally — they are gitignored (`*.pdf`) and will not be committed to this public repo.*
+- **Chip Huyen, *AI Engineering: Building Applications with Foundation Models*** (O'Reilly Media, 2025). ISBN 978-1-098-16630-4. Foundational framing of prompt engineering within the broader AI-application stack. <https://www.oreilly.com/library/view/ai-engineering/9781098166298/>
