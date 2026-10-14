@@ -1,6 +1,6 @@
 ---
 name: agent-factory
-description: Compile a request into a reusable, structured pseudocode prompt blueprint instead of just answering it directly — a prompt compiler, not a prompt generator. Use when the user asks to "write a prompt for X" / "build me a prompt that does X" / "turn this into a reusable prompt" / "make an agent/GPT that does X" / "compile this into pseudocode" / "give me a prompt blueprint for X" / "help me build a skill for X". Defaults to producing a `<role><goal><task>...<termination_condition>` pseudocode block; on request (or when the ask is clearly a persistent, repeatable agent rather than a one-off prompt) it converts that blueprint into an actual agent skill — a Claude Code `SKILL.md` or a Cursor rule. Reference reading is cited in `references/bibliography.md`; the canonical worked example is `examples/repository-auditor.txt`.
+description: Compile a request into a reusable, structured pseudocode prompt blueprint instead of just answering it directly — a prompt compiler, not a prompt generator. Use when the user asks to "write a prompt for X" / "build me a prompt that does X" / "turn this into a reusable prompt" / "make an agent/GPT that does X" / "compile this into pseudocode" / "give me a prompt blueprint for X" / "help me build a skill for X". Defaults to producing a `<role><goal><task>...<termination_condition>` pseudocode block; on request (or when the ask is clearly a persistent, repeatable agent rather than a one-off prompt) it converts that blueprint into a portable agent skill (a `SKILL.md` folder that runs in Claude Code, Codex, Gemini CLI, Cursor, GitHub Copilot, OpenCode, and Hermes). Reference reading is cited in `references/bibliography.md`; the canonical worked example is `examples/repository-auditor.txt`.
 ---
 
 # Agent factory
@@ -120,34 +120,33 @@ Sometimes the request isn't "give me a prompt to paste into a chat" — it's "ma
 | `<output_format>` | An "Output(s)" section with concrete file paths/structure, not abstract shape |
 | `<termination_condition>` | Folded into the audit/checklist section — what must be true before the skill's work counts as done |
 
-### Target format: Claude Code skill vs. Cursor rule
+### Target format: one portable `SKILL.md`
 
-The same blueprint maps to either host. Pick based on where the user works (ask if unstated):
-
-**Claude Code / [agentskills.io](https://agentskills.io/specification) `SKILL.md`** — a folder `skill-name/SKILL.md` with YAML frontmatter:
+Default to a portable [Agent Skills](https://agentskills.io/specification) folder: `<name>/SKILL.md` (plus any `examples/` or `references/` it links to). The same folder works unchanged in every major harness, so do not fork the content per tool.
 
 ```
 ---
-name: <kebab-case, matches the directory name>
-description: <one paragraph — what it does, then "Use this when a user asks..." with 3-5 concrete trigger phrases, then where the canonical reference implementation lives if there is one>
+name: <lowercase-hyphenated, 1-64 chars, matches the directory name>
+description: <1-1024 chars: what it does, then "Use this when a user asks..." with 3-5 concrete trigger phrases, then where the canonical reference implementation lives if there is one>
 ---
 ```
 
-Install location: global (`~/.claude/skills/<name>/SKILL.md`, available across every project) vs. project-local (`<repo>/.claude/skills/<name>/SKILL.md`, scoped to one repo). Global is the default for anything not tied to one codebase's internals — ask before scaffolding.
+Where to put it (global is the default for anything not tied to one codebase's internals; ask before scaffolding):
 
-**Cursor rule** (`.mdc`) — a file `<repo>/.cursor/rules/<name>.mdc` (project-scoped) or `~/.cursor/rules/<name>.mdc` (global). Frontmatter uses Cursor's fields:
+| Harness | Global | Project |
+|---|---|---|
+| Codex, Gemini CLI, Cursor, GitHub Copilot, OpenCode | `~/.agents/skills/<name>/` | `<repo>/.agents/skills/<name>/` |
+| Claude Code | `~/.claude/skills/<name>/` | `<repo>/.claude/skills/<name>/` |
+| Hermes | `~/.hermes/skills/<name>/` | n/a |
 
-```
----
-description: <when this rule applies — same trigger phrasing as the skill description>
-globs: <optional file globs that auto-attach the rule; omit for manual/agent-requested>
-alwaysApply: false
----
-```
+`~/.agents/skills/` is the shared location, so one copy there plus one in `~/.claude/skills/` covers nearly every user.
 
-`alwaysApply: false` + a rich `description` makes it an *agent-requested* rule the model pulls in when relevant, which is the closest Cursor analogue to a Claude skill. The body below the frontmatter is the same Markdown skill content.
+Two cases are not skills:
 
-### Structural conventions (both formats)
+- **Always-on rules** that must apply to every task (style, repo conventions) belong in the harness's instruction file (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`), not a skill that loads on demand.
+- **File-scoped auto-attach in Cursor** (a rule that fires whenever matching files are open) is a Cursor `.mdc` rule in `.cursor/rules/<name>.mdc` with `description`, `globs`, and `alwaysApply: false`. Produce one only when the user explicitly wants glob-triggered behavior in Cursor.
+
+### Structural conventions
 
 Follow these when scaffolding a new skill body:
 
