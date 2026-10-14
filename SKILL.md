@@ -94,6 +94,7 @@ Work through this in order when compiling. Skipping straight to `<task>` without
 7. **Define output structure** — tables and schemas over paragraphs wherever the content is enumerable.
 8. **Include evaluation criteria** — give the model a way to judge its own draft before returning it.
 9. **Make it reusable** — write for the *next* time this job comes up, not just this one instance. If a value is specific to today's ask (a name, a date, a file path), keep it, but keep the surrounding structure generic.
+10. **Give multi-persona audits a pattern-level architect.** Per-area personas verify claims against files, but none of them owns the question "do these individually reasonable fixes cluster around one wrong seam?" When a prompt splits a review across personas, add an architect whose only job is to take the other personas' findings plus the code's own "here's why this hack exists" comments, find every interface carrying two or more accumulated workarounds or special cases, and ask whether the interface itself is the defect. Several separate rewrite rules, injected base paths, and escape-hatch ports around one reverse-proxy mount, for example, usually mean the mounting scheme is wrong, not that each needs its own fix. The number of adapters around an interface is the metric; repeated workarounds are the evidence.
 
 ## Quality constraints to bake into `<instructions>`
 
